@@ -2,6 +2,7 @@
 module Main where
 
 import LTL
+import Automaton
 
 main :: IO ()
 main = do
