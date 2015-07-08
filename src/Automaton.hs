@@ -14,6 +14,17 @@ data PosLogic s
   | PLOr !(PosLogic s) !(PosLogic s)
   deriving (Eq, Show)
 
+satisfies :: Word64 -> PosLogic Int -> Bool
+satisfies set = go
+  where
+   go p = case p of
+     PLTrue -> True
+     PLFalse -> False
+     PLState s -> testBit set s
+     PLAnd p1 p2 -> go p1 && go p2
+     PLOr p1 p2 -> go p1 || go p2
+
+
 -- | s : type of state, a : type of alphabet
 type AlterAuto s a = Map.Map (s, a) (PosLogic s)
 
@@ -41,3 +52,10 @@ nfaToDfa :: Ord a => Int -> [a] -> NondetAuto Int a -> DetAuto Word64 a
 nfaToDfa n alphabet nfa =
   Map.fromList [((s, a), foldl' (.|.) 0 sum) | s <- [0 .. (1 `shiftL` n) - 1], a <- alphabet,
     let sum = [ listToSubset (nfa Map.! (i, a))| i <- [0 .. n - 1], testBit s i]]
+
+
+afaToNfa :: Ord a => Int -> [a] -> AlterAuto Int a -> NondetAuto Word64 a
+afaToNfa n alphabet afa =
+  Map.fromList [((s, a), sum) | s <- [0 .. (1 `shiftL` n) - 1], a <- alphabet,
+    let sum = [t | t <- [0 .. (1 `shiftL` n) - 1], all (satisfies t) [(afa Map.! (i, a))| i <- [0 .. n - 1], testBit s i]]]
+
