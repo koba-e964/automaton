@@ -24,3 +24,13 @@ executable automata
                        text >=0.11, containers >=0.5
   hs-source-dirs:      src/
   default-language:    Haskell2010
+
+Test-Suite test-automaton
+  type:       exitcode-stdio-1.0
+  main-is:    TestAutomaton.hs
+  build-depends:       base >=4.7 && <4.8, 
+                       text >=0.11, containers >=0.5,
+                       test-framework >=0.8, HUnit >= 1.2, test-framework-hunit >=0.3
+  ghc-options:         -Wall
+  hs-source-dirs:      src/, test/
+  default-language:    Haskell2010
