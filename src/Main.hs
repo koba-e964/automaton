@@ -3,8 +3,9 @@ module Main where
 
 import LTL
 import Automaton
+import Synthesis
 
 main :: IO ()
 main = do
-  print (ltlF (ltlAP "p"))
+  print $ subformulae (ltlG (ltlAP "p" --> ltlF (ltlAP "q")))
   putStrLn "Hello, world"
