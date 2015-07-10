@@ -25,6 +25,20 @@ satisfies set = go
      PLOr p1 p2 -> go p1 || go p2
 
 
+plSimpl :: PosLogic s -> PosLogic s
+plSimpl (PLAnd PLTrue l) = plSimpl l
+plSimpl (PLAnd l PLTrue) = plSimpl l
+plSimpl (PLAnd PLFalse l) = PLFalse
+plSimpl (PLAnd l PLFalse) = PLFalse
+plSimpl (PLOr PLTrue l) = PLTrue
+plSimpl (PLOr l PLTrue) = PLTrue
+plSimpl (PLOr PLFalse l) = plSimpl l
+plSimpl (PLOr l PLFalse) = plSimpl l
+plSimpl (PLAnd l r) = plSimpl l `PLAnd` plSimpl r
+plSimpl (PLOr l r) = plSimpl l `PLOr` plSimpl r
+plSimpl l = l
+
+
 -- | s : type of state, a : type of alphabet
 type AlterAuto s a = Map.Map (s, a) (PosLogic s)
 
@@ -59,3 +73,8 @@ afaToNfa n alphabet afa =
   Map.fromList [((s, a), sum) | s <- [0 .. (1 `shiftL` n) - 1], a <- alphabet,
     let sum = [t | t <- [0 .. (1 `shiftL` n) - 1], all (satisfies t) [(afa Map.! (i, a))| i <- [0 .. n - 1], testBit s i]]]
 
+
+prettyPrint :: (Show s, Show a, Show t) => Map.Map (s, a) t -> String
+prettyPrint auto = intercalate "\n" (map f (Map.toList auto))
+  where
+    f (s, target) = show s ++ " -> " ++ show target

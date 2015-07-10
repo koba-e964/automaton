@@ -31,12 +31,13 @@ synthesis aps ltl =
   let subform = subformulae ltl
       len = length aps in
   let trans = Map.fromList [((s, truth), rho s truth) | s <- subform, truth <- [0 .. shiftL 1 len - 1]]
-      rho s truth = case s of
+      rho s truth = plSimpl $ case s of
         AtomicProp p -> if sat p truth aps then PLTrue else PLFalse
         LTLOr l r -> rho l truth `PLOr` rho r truth
         LTLAnd l r -> rho l truth `PLAnd` rho r truth
         LTLNot l -> negateSub (rho l truth)
         LTLUntil l r -> rho r truth `PLOr` (rho l truth `PLAnd` PLState s)
+        LTLNext x -> PLState x
         LTLTrue -> PLTrue -- error "next state of true"
    in
   trans

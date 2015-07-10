@@ -11,6 +11,7 @@ data LTL
  | LTLAnd LTL LTL
  | LTLNot LTL
  | LTLUntil LTL LTL
+ | LTLNext LTL
  | LTLTrue
  deriving (Eq, Ord)
  
@@ -22,6 +23,7 @@ instance Show LTL where
     LTLNot x -> "~" ++ showLTLPar x
     LTLUntil LTLTrue y -> "F " ++ showLTLPar y
     LTLUntil x y -> showLTLPar x ++ " U " ++ showLTLPar y
+    LTLNext x -> "X " ++ showLTLPar x
     LTLTrue -> "T"
 
 showLTLPar :: LTL -> String
@@ -31,10 +33,11 @@ showLTLPar ltl = case ltl of
   _ -> "(" ++ show ltl ++ ")"
 
 ltlU, (-->) :: LTL -> LTL -> LTL
-ltlF, ltlG :: LTL -> LTL
+ltlF, ltlG, ltlX :: LTL -> LTL
 ltlU = LTLUntil
 ltlF = LTLUntil LTLTrue
 ltlG x = LTLNot (ltlF x)
+ltlX = LTLNext
 
 ltlAP :: PropName -> LTL
 ltlAP = AtomicProp
@@ -48,6 +51,7 @@ subformulae ltl = case ltl of
   LTLAnd x y -> subformulae x ++ subformulae y ++ [ltl]
   LTLNot x -> subformulae x ++ [ltl]
   LTLUntil x y -> subformulae x ++ subformulae y ++ [ltl]
+  LTLNext x -> subformulae x ++ [ltl]
   LTLTrue -> []
 
 
