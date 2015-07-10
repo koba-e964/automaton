@@ -12,7 +12,7 @@ data LTL
  | LTLNot LTL
  | LTLUntil LTL LTL
  | LTLTrue
- deriving (Eq)
+ deriving (Eq, Ord)
  
 instance Show LTL where
   show ltl = case ltl of

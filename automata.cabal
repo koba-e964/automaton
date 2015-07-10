@@ -23,6 +23,7 @@ executable automata
   build-depends:       base >=4.7 && <4.8,
                        text >=0.11, containers >=0.5
   hs-source-dirs:      src/
+  ghc-options:         -Wall
   default-language:    Haskell2010
 
 Test-Suite test-automaton

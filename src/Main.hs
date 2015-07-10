@@ -7,5 +7,6 @@ import Synthesis
 
 main :: IO ()
 main = do
-  print $ subformulae (ltlG (ltlAP "p" --> ltlF (ltlAP "q")))
+  let ltl = ltlG (ltlAP "p" --> ltlF (ltlAP "q"))
+  print $ synthesis ["p", "q"] ltl
   putStrLn "Hello, world"
