@@ -12,7 +12,21 @@ data PosLogic s
   | PLState !s
   | PLAnd !(PosLogic s) !(PosLogic s)
   | PLOr !(PosLogic s) !(PosLogic s)
-  deriving (Eq, Show)
+  deriving (Eq)
+
+parenShow :: Show s => PosLogic s -> String
+parenShow logic = case logic of
+  PLAnd _ _ -> "(" ++ show logic ++ ")"
+  PLOr _ _ -> "(" ++ show logic ++ ")"
+  _         -> show logic
+
+instance Show s => Show (PosLogic s) where
+  show logic = case logic of
+    PLTrue -> "true"
+    PLFalse -> "false"
+    PLState s -> "[" ++ show s ++ "]"
+    PLAnd l r -> parenShow l ++ " /\\ " ++ parenShow r
+    PLOr l r -> parenShow l ++ " \\/ " ++ parenShow r
 
 satisfies :: Word64 -> PosLogic Int -> Bool
 satisfies set = go
@@ -25,18 +39,22 @@ satisfies set = go
      PLOr p1 p2 -> go p1 || go p2
 
 
-plSimpl :: PosLogic s -> PosLogic s
-plSimpl (PLAnd PLTrue l) = plSimpl l
-plSimpl (PLAnd l PLTrue) = plSimpl l
-plSimpl (PLAnd PLFalse l) = PLFalse
-plSimpl (PLAnd l PLFalse) = PLFalse
-plSimpl (PLOr PLTrue l) = PLTrue
-plSimpl (PLOr l PLTrue) = PLTrue
-plSimpl (PLOr PLFalse l) = plSimpl l
-plSimpl (PLOr l PLFalse) = plSimpl l
-plSimpl (PLAnd l r) = plSimpl l `PLAnd` plSimpl r
-plSimpl (PLOr l r) = plSimpl l `PLOr` plSimpl r
-plSimpl l = l
+plSimpl, plSimplOnce :: Eq s => PosLogic s -> PosLogic s
+
+plSimpl x = let y = plSimplOnce x in
+  if x == y then x else plSimpl y
+
+plSimplOnce (PLAnd PLTrue l) = plSimplOnce l
+plSimplOnce (PLAnd l PLTrue) = plSimplOnce l
+plSimplOnce (PLAnd PLFalse _) = PLFalse
+plSimplOnce (PLAnd _ PLFalse) = PLFalse
+plSimplOnce (PLOr PLTrue _) = PLTrue
+plSimplOnce (PLOr _ PLTrue) = PLTrue
+plSimplOnce (PLOr PLFalse l) = plSimplOnce l
+plSimplOnce (PLOr l PLFalse) = plSimplOnce l
+plSimplOnce (PLAnd l r) = plSimplOnce l `PLAnd` plSimplOnce r
+plSimplOnce (PLOr l r) = plSimplOnce l `PLOr` plSimplOnce r
+plSimplOnce l = l
 
 
 -- | s : type of state, a : type of alphabet

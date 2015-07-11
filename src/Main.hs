@@ -9,5 +9,6 @@ main :: IO ()
 main = do
   let ltl = ltlG (ltlAP "p" --> ltlF (ltlAP "q"))
   let ltl2 = LTLNot (ltlAP "p") `ltlU` ltlX (ltlAP "q")
-  putStrLn $ prettyPrint $ synthesis ["p", "q"] ltl2
+  let aps = ["p", "q"]
+  putStrLn $ afaPrettyPrint aps $ synthesis aps ltl2
   putStrLn "Hello, world"

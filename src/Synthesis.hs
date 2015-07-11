@@ -3,7 +3,7 @@ module Synthesis where
 import Automaton
 import LTL
 import Data.Bits
-import Data.List (elemIndex, nub)
+import Data.List (elemIndex, intercalate, nub)
 import qualified Data.Map as Map
 import Data.Word
 
@@ -41,4 +41,10 @@ synthesis aps ltl =
         LTLTrue -> PLTrue -- error "next state of true"
    in
   trans
+
+afaPrettyPrint :: [PropName] -> AlterAuto LTL Word64 -> String
+afaPrettyPrint aps auto = intercalate "\n" (map f (Map.toList auto))
+  where
+    f ((s, truth), target) = "(" ++ show s ++ ", " ++ showTruth truth ++ ") -> " ++ show target
+    showTruth truth = "{" ++ intercalate "," [show (aps !! i) | i <- [0 .. length aps - 1], testBit truth i] ++ "}"
 
