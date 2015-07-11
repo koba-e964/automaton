@@ -25,8 +25,8 @@ sat p truth aps =
     Nothing -> False
     Just ind -> testBit truth ind
   
-
-synthesis :: [PropName] -> LTL -> AlterAuto LTL Word64
+-- | returns (initial state, final states, transition function)
+synthesis :: [PropName] -> LTL -> (LTL, [LTL], AlterAuto LTL Word64)
 synthesis aps ltl =
   let subform = nub $ concatMap (\x -> [x, ltlNot x]) $ subformulae ltl
       len = length aps in
@@ -40,10 +40,12 @@ synthesis aps ltl =
         LTLNext x -> PLState x
         LTLTrue -> PLTrue -- error "next state of true"
    in
-  trans
+  (ltl, [ {- subformulae of form ~(t U v) -} ], trans)
 
-afaPrettyPrint :: [PropName] -> AlterAuto LTL Word64 -> String
-afaPrettyPrint aps auto = intercalate "\n" (map f (Map.toList auto))
+afaPrettyPrint :: [PropName] -> (LTL, [LTL], AlterAuto LTL Word64) -> String
+afaPrettyPrint aps (init, fin, auto) = "initial state: " ++ show init
+  ++ "\nfinal states: " ++ show fin
+  ++ "\ntransition function:\n" ++ intercalate "\n" (map f (Map.toList auto))
   where
     f ((s, truth), target) = "(" ++ show s ++ ", " ++ showTruth truth ++ ") -> " ++ show target
     showTruth truth = "{" ++ intercalate "," [show (aps !! i) | i <- [0 .. length aps - 1], testBit truth i] ++ "}"
