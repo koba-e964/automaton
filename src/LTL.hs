@@ -54,4 +54,6 @@ subformulae ltl = case ltl of
   LTLNext x -> subformulae x ++ [ltl]
   LTLTrue -> []
 
-
+ltlNot :: LTL -> LTL
+ltlNot (LTLNot x) = x
+ltlNot x = LTLNot x

@@ -3,7 +3,7 @@ module Synthesis where
 import Automaton
 import LTL
 import Data.Bits
-import Data.List (elemIndex)
+import Data.List (elemIndex, nub)
 import qualified Data.Map as Map
 import Data.Word
 
@@ -28,7 +28,7 @@ sat p truth aps =
 
 synthesis :: [PropName] -> LTL -> AlterAuto LTL Word64
 synthesis aps ltl =
-  let subform = subformulae ltl
+  let subform = nub $ concatMap (\x -> [x, ltlNot x]) $ subformulae ltl
       len = length aps in
   let trans = Map.fromList [((s, truth), rho s truth) | s <- subform, truth <- [0 .. shiftL 1 len - 1]]
       rho s truth = plSimpl $ case s of
