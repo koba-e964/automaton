@@ -1,6 +1,24 @@
 # Automaton
 
-This repository contains algorithms for operations of finite/infinite automata.
+This repository contains algorithms for operations of finite/infinite automata written in Haskell.
+
+## Dependencies
+
+* Haskell (GHC 7.8.2)
+
+## How to run
+If you run command
+```
+cabal configure
+cabal run
+```
+, the executable performs syntheses of automata from 3 LTL formulae:
+```
+G(p -> F q)
+(~p) U (X q)
+G(F p -> q)
+```
+(`~` means negation)
 
 ## Functions
 Currently, this repository includes:
