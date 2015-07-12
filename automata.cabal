@@ -5,7 +5,7 @@ name:                automata
 version:             0.1.0.0
 synopsis:            Automata-theoretic
 -- description:         
-homepage:            https://github.com/koba-e964/automata
+homepage:            https://github.com/koba-e964/automaton
 -- license:             
 license-file:        LICENSE
 author:              koba-e964
