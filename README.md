@@ -1,6 +1,6 @@
 # Automaton
 
-This repository contains algorithms for operations of finite/infinite automata written in Haskell.
+[This repository](https://github.com/koba-e964/automaton) contains algorithms for operations of finite/infinite automata written in Haskell.
 
 ## Dependencies
 
