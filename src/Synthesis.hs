@@ -40,7 +40,10 @@ synthesis aps ltl =
         LTLNext x -> PLState x
         LTLTrue -> PLTrue -- error "next state of true"
    in
-  (ltl, [ {- subformulae of form ~(t U v) -} ], trans)
+  let notU (LTLNot (LTLUntil _ _)) = True
+      notU _                       = False
+   in
+  (ltl, filter notU subform, trans)
 
 afaPrettyPrint :: [PropName] -> (LTL, [LTL], AlterAuto LTL Word64) -> String
 afaPrettyPrint aps (init, fin, auto) = "initial state: " ++ show init

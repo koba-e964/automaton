@@ -36,7 +36,7 @@ ltlU, (-->) :: LTL -> LTL -> LTL
 ltlF, ltlG, ltlX :: LTL -> LTL
 ltlU = LTLUntil
 ltlF = LTLUntil LTLTrue
-ltlG x = LTLNot (ltlF x)
+ltlG x = LTLNot (ltlF (LTLNot x))
 ltlX = LTLNext
 
 ltlAP :: PropName -> LTL
